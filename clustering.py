@@ -10,6 +10,8 @@ import math
 ###################################################################################################################
 # TEXT DOCUMENTS WITH DATA
 
+# full path: 'C:\Users\Hanna\Documents\KEX\data_sets\filename.txt'
+
 D128C2File = 'g2-128-10.txt'    # 128-dimenisional data with 2 clusters
 D64C2File = 'g2-64-10.txt'      # 64-dimenisional data with 2 clusters
 D32C2File = 'g2-32-10.txt'      # 32-dimenisional data with 2 clusters
