@@ -9,15 +9,16 @@ import os
 ###################################################################################################################
 ###################################################################################################################
 # TEXT DOCUMENTS WITH DATA
-D128C2File = 'g2-128-10.txt'    # 128-dimenisional data with 2 clusters
-D64C2File = 'g2-64-10.txt'      # 64-dimenisional data with 2 clusters
-D32C2File = 'g2-32-10.txt'      # 32-dimenisional data with 2 clusters
-D16C2File = 'g2-16-10'          # 16-dimenisional data with 2 clusters
-D8C2File = 'g2-8-10.txt'        # 8-dimenisional data with 2 clusters
-D4C2File = 'g2-4-10.txt'        # 4-dimenisional data with 2 clusters
+filePath = '/Users/Hanna/Documents/KEX/data_sets/'
+D128C2File = filePath + 'g2-128-10.txt'    # 128-dimenisional data with 2 clusters
+D64C2File = filePath + 'g2-64-10.txt'      # 64-dimenisional data with 2 clusters
+D32C2File = filePath + 'g2-32-10.txt'      # 32-dimenisional data with 2 clusters
+D16C2File = filePath + 'g2-16-10'          # 16-dimenisional data with 2 clusters
+D8C2File = filePath + 'g2-8-10.txt'        # 8-dimenisional data with 2 clusters
+D4C2File = filePath + 'g2-4-10.txt'        # 4-dimenisional data with 2 clusters
 
-D2C9File = 'D2.txt'             # 2-dimenisional data with 9 clusters
-D2C2File = 'g2-2-10.txt'        # 2-dimenisional data with 2 clusters
+D2C9File = filePath + 'D2.txt'             # 2-dimenisional data with 9 clusters
+D2C2File = filePath + 'g2-2-10.txt'        # 2-dimenisional data with 2 clusters
 
 # data files created from makeData.py
 # ....
