@@ -357,9 +357,13 @@ def plot2D(dataArray, clusterList, centroidCoordinates, ite):
 #
 #
 #
-def dataPointTest(normArray, nVec, clusters, dimension):
+def dataPointTest(normArray, nVec):
 
-        # DATA WE WANT TO SAVE FROM SOLVER
+    # constant parameters
+    clusters = 2
+    dimension = 2
+    
+    # DATA WE WANT TO SAVE FROM SOLVER
     nodeVec = []    # nr of nodes explored
     timeVec = []    # solver run time
 
@@ -393,19 +397,75 @@ def dataPointTest(normArray, nVec, clusters, dimension):
         plt.savefig(os.path.join(figPath, figName))
 
 
-    print('________________________________________________________________________-')
-    print('nr of data points')
-    print(nVec)
-    print(' ')
-    print('nodes explored')
-    print(nodeVec)
-    print(' ')
-    print('solver run time')
-    print(timeVec)
+    return nodeVec, timeVec
 
 
 
 ###################################################################################################################
+
+#
+#
+#
+def dimensionTest(normArray, dimension):
+
+    # constant parameters
+    clusters = 2    # constant nr of clusters
+    n = 200         # constant nr of data points
+
+    # DATA WE WANT TO SAVE FROM SOLVER
+    nodeVec = []    # nr of nodes explored
+    timeVec = []    # solver run time
+    
+    
+    for ite in range(0,iterations):    # test every sample size 5 times
+
+        # choose n random data from normilized data array
+        randomArray = chooseRandomData(normArray, n)  
+
+        # gurobi solver  
+        nodeCount, runTime = solveProblem(randomArray, dimension, clusters, n, ite)
+
+        # add expl. nodes and runtime of iteration i
+        nodeVec.append(nodeCount)
+        timeVec.append(runTime)
+
+    return nodeVec, timeVec
+
+
+###################################################################################################################
+
+#
+#
+#
+def clusterTest(normArray, clusters):
+
+    # constant parameters
+    n = 100
+    dimension = 2
+
+    # DATA WE WANT TO SAVE FROM SOLVER
+    nodeVec = []    # nr of nodes explored
+    timeVec = []    # solver run time
+
+
+    for ite in range(0,iterations):    # test every sample size 5 times
+
+        # choose n random data from normilized data array
+        randomArray = chooseRandomData(normArray, n)  
+
+        # gurobi solver  
+        nodeCount, runTime = solveProblem(randomArray, dimension, clusters, n, ite)
+
+        # add expl. nodes and runtime of iteration i
+        nodeVec.append(nodeCount)
+        timeVec.append(runTime)
+
+    return nodeVec, timeVec
+
+
+    
+
+
 ###################################################################################################################
 
 def main():
@@ -417,20 +477,91 @@ def main():
     global clusterVec
     global dimVec
     
-    # TEST 1: NR OF DATA POINTS
+    # make data arrays                          # Test
+    # D2C9Array = readFile(D2C9File)              # (1), 3
+    # D2C2Array = readFile(D2C2File)              # 1, 2, 3            
+    # D4C2Array = readFile(D4C2File)              # 2
+    # D8C2Array = readFile(D8C2File)              # 2
+    # D16C2Array = readFile(D16C2File)            # 2
+    # D32C2Array = readFile(D32C2File)            # 2
+    # D64C2Array = readFile(D64C2File)            # 2
+    D128C2Array = readFile(D128C2File)          # 2
+
+    # normalize data
+    # D2C9Norm = normalizeData(D2C9Array)
+    # D2C2Norm = normalizeData(D2C2Array)
+    # D4C2Norm = normalizeData(D4C2Array)
+    # D8C2Norm = normalizeData(D8C2Array)
+    # D16C2Norm = normalizeData(D16C2Array)
+    # D32C2Norm = normalizeData(D32C2Array)
+    # D64C2Norm = normalizeData(D64C2Array)
+    D128C2Norm = normalizeData(D128C2Array)
     
-    # make array of data in txt document
-    dataArray1 = readFile(D2C2File)
 
-    # dimension and nr of clusters of data
-    cluster1 = clusterVec[0]    # nr of clusters of data chosen above
-    dimension1 = dimVec[0]   # dimension of data
 
-    # normalize data in array
-    normArray1 = normalizeData(dataArray1)
+    
+ 
+    
+    
+    
+    
+    
+    # TEST 1: nr of data points
 
     nVec = [25, 50, 100, 200, 400, 800]
-    dataPointTest(normArray1, nVec, cluster1, dimension1)
+    #nodeVec1, timeVec1 = dataPointTest(D2C2Norm, nVec)
+
+
+
+    # TEST 2: dimension
+    dimOfData = dimVec[6]
+    nodeVec2, timeVec2 = dimensionTest(D128C2Norm, dimOfData)
+
+
+
+    # TEST 3: nr of clusters
+    #clusterOfData = clusterVec[0]
+    #nodeVec3, timeVec3 = clusterTest(D2C9Norm, clusterOfData)
+
+
+
+
+
+
+    # print('_________________________________ TEST 1: data points _______________________________________')
+    # print('nr of data points')
+    # print(nVec)
+    # print(' ')
+    # print('nodes explored')
+    # print(nodeVec1)
+    # print(' ')
+    # print('solver run time')
+    # print(timeVec1)
+
+
+    print(' ')
+    print('_________________________________ TEST 2: dimension _______________________________________')
+    print('dimension of data')
+    print(dimOfData)
+    print(' ')
+    print('nodes explored')
+    print(nodeVec2)
+    print(' ')
+    print('solver run time')
+    print(timeVec2)
+
+
+    # print(' ')
+    # print('_________________________________ TEST 3: clusters _______________________________________')
+    # print('dimension of data')
+    # print(clusterOfData)
+    # print(' ')
+    # print('nodes explored')
+    # print(nodeVec3)
+    # print(' ')
+    # print('solver run time')
+    # print(timeVec3)
+
 
     
     
