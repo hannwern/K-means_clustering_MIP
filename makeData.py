@@ -9,23 +9,26 @@ def makeDataSet(k):
     # make k random centroids
     centroids = []
 
-    for i in range(k):
-
-        lowerBound = i * 100 + 200
-        upperBound = i * 100 + 400
-
-        x = random.randint(lowerBound, upperBound)
-        y = random.randint(lowerBound, upperBound)
-        c = [x,y]
-        centroids.append(c)
+    # for i in range(k):
 
 
+    #     a = random.randint(1,1000)
 
-    maxMinLimit = 50
+    #     lowerBound = i * a + 100
+    #     upperBound = i * a + 500
+
+    #     x = random.randint(lowerBound, upperBound)
+    #     y = random.randint(lowerBound, upperBound)
+    #     c = [x,y]
+    #     centroids.append(c)
+
+    centroids = [[1000,80], [-100,80], [-2000,-100], [100,-200]]
+
+
+
+    maxMinLimit = 80
     dataList = []
     for c in centroids: # make points for every cluster
-
-        # dataList.append(c) # add cluster centroid to data set
 
         # interval from where data point can be chosen
         minLimx = c[0] - maxMinLimit
@@ -35,7 +38,7 @@ def makeDataSet(k):
         maxLimy = c[1] + maxMinLimit
 
 
-        for j in range(100):     # make 100 data points for every cluster
+        for j in range(200):     # make 100 data points for every cluster
 
             x = random.randint(minLimx, maxLimx)
             y = random.randint(minLimy, maxLimy)
@@ -92,7 +95,7 @@ def plot(dataList, k):
 def main():
 
     
-    k = 6       # nr of clusters
+    k = 4       # nr of clusters
     
     data = makeDataSet(k)
 

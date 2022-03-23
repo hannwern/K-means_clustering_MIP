@@ -3,18 +3,16 @@ import gurobipy as gp
 import random
 import matplotlib.pyplot as plt
 import math
-
-
+import os
 
 
 ###################################################################################################################
+###################################################################################################################
 # TEXT DOCUMENTS WITH DATA
-
-# full path: 'C:\Users\Hanna\Documents\KEX\data_sets\filename.txt'
-
 D128C2File = 'g2-128-10.txt'    # 128-dimenisional data with 2 clusters
 D64C2File = 'g2-64-10.txt'      # 64-dimenisional data with 2 clusters
 D32C2File = 'g2-32-10.txt'      # 32-dimenisional data with 2 clusters
+D16C2File = 'g2-16-10'          # 16-dimenisional data with 2 clusters
 D8C2File = 'g2-8-10.txt'        # 8-dimenisional data with 2 clusters
 D4C2File = 'g2-4-10.txt'        # 4-dimenisional data with 2 clusters
 
@@ -22,12 +20,12 @@ D2C9File = 'D2.txt'             # 2-dimenisional data with 9 clusters
 D2C2File = 'g2-2-10.txt'        # 2-dimenisional data with 2 clusters
 
 # data files created from makeData.py
-testFile = 'testfile.txt'
+# ....
 
 
-# SET PARAMETERS
-clusters = 2    # nr of clusters of data chosen above
-
+# PARAMETERS
+dimVec = [2, 4, 8, 16, 32, 64, 128]
+clusterVec = [2, 3, 4, 5, 6, 7, 8, 9]
 iterations = 5  # nr of iterations the program will do
 
 
@@ -149,12 +147,11 @@ def getM(dataArray):
 #
 #
 # solve problem with gurobi
-def solveProblem(dataArray, dimension, n, ite):
+def solveProblem(dataArray, dimension, clusters, n, ite):
    
    
     # calculate M
     MList = getM(dataArray)
-    #print('nr of M in list: ' + str(len(MList)))
 
 
     # MAKE GUROBI MODEL
@@ -218,7 +215,7 @@ def solveProblem(dataArray, dimension, n, ite):
     model.setObjective(sum(r[data] for data in range(n)))
 
     # SET TIME LIMIT
-    model.setParam('TimeLimit', 900) # you don't want to wait much longer! Consider test that are faster
+    model.setParam('TimeLimit', 1800) # you don't want to wait much longer! Consider test that are faster
     
     # UPDATE MODEL
     model.update()
@@ -333,7 +330,7 @@ def plot2D(dataArray, clusterList, centroidCoordinates, ite):
         x = dataArray[j][0]                 # x-coordinate
         y = dataArray[j][1]                 # y-coordinate
 
-        plt.scatter(x, y, color = c, s = 10)
+        plt.scatter(x, y, color = c, s = 1)
         
 
     # plot cluster centroids
@@ -343,7 +340,7 @@ def plot2D(dataArray, clusterList, centroidCoordinates, ite):
         x = centroidCoordinates[i][0]   # x-coordinate
         y = centroidCoordinates[i][1]   # y- coordinate
 
-        plt.scatter(x,y, color = c, s = 15, marker='*')
+        plt.scatter(x,y, color = c, s = 10, marker='*')
         
 
     plt.tight_layout()
@@ -356,32 +353,12 @@ def plot2D(dataArray, clusterList, centroidCoordinates, ite):
 
 ###################################################################################################################
 
-###################################################################################################################
-###################################################################################################################
+#
+#
+#
+def dataPointTest(normArray, nVec, clusters, dimension):
 
-def main():
-
-    # PARAMETERS
-    global clusters     # nr of clusters
-    global centroidColors
-    global dataColors
-    global iterations
-
-    # MAKE ARRAY of data in txt document
-    dataArray = readFile(D2C2File)
-
-    # dimension of data
-    dimension = len(dataArray[0]) 
-
-    # NORMALIZE ARRAY
-    normArray = normalizeData(dataArray)
-
-
-    # TEST: NR OF DATA POINTS
-    # nVec = [25, 50, 100, 250, 350, 500]
-    nVec = [10, 30, 50]
-
-    # DATA WE WANT TO SAVE FROM SOLVER
+        # DATA WE WANT TO SAVE FROM SOLVER
     nodeVec = []    # nr of nodes explored
     timeVec = []    # solver run time
 
@@ -393,9 +370,13 @@ def main():
         
         for ite in range(0,iterations):    # test every sample size 5 times
 
-            randomArray = chooseRandomData(dataArray, n)    # normarray
-            nodeCount, runTime = solveProblem(randomArray, dimension, n, ite)
+            # choose n random data from normilized data array
+            randomArray = chooseRandomData(normArray, n)  
 
+            # gurobi solver  
+            nodeCount, runTime = solveProblem(randomArray, dimension, clusters, n, ite)
+
+            # add expl. nodes and runtime of iteration i
             tempNodeVec.append(nodeCount)
             tempTimeVec.append(runTime)
 
@@ -403,15 +384,52 @@ def main():
         nodeVec.append(tempNodeVec)
         timeVec.append(tempTimeVec)
 
+        # show/save 2D cluster plots
+        #plt.show()
+        figPath = '/Users/Hanna/Documents/KEX/plottar'
+        figName = 'test1_' + str(clusters) + 'C_' + str(n) + 'D.pdf'
+        #plt.savefig(figName)
+        plt.savefig(os.path.join(figPath, figName))
 
-        plt.show()
-        # figName = str(k) + 'cluster_' + str(n) + 'data.png'
-        # plt.savefig(figName)
 
+    print('________________________________________________________________________-')
+    print('nr of data points')
+    print(nVec)
     print(' ')
+    print('nodes explored')
     print(nodeVec)
     print(' ')
+    print('solver run time')
     print(timeVec)
+
+
+
+###################################################################################################################
+###################################################################################################################
+
+def main():
+
+    # PARAMETERS
+    global centroidColors
+    global dataColors
+    global iterations
+    global clusterVec
+    global dimVec
+    
+    # TEST 1: NR OF DATA POINTS
+    
+    # make array of data in txt document
+    dataArray1 = readFile(D2C2File)
+
+    # dimension and nr of clusters of data
+    cluster1 = clusterVec[0]    # nr of clusters of data chosen above
+    dimension1 = dimVec[0]   # dimension of data
+
+    # normalize data in array
+    normArray1 = normalizeData(dataArray1)
+
+    nVec = [25, 50, 100, 200, 400, 800]
+    dataPointTest(normArray1, nVec, cluster1, dimension1)
 
     
     
