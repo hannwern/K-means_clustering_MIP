@@ -1,135 +1,228 @@
 import numpy
 import matplotlib.pyplot as plt
 import math
+import os
 
+#############################################################################################################
+#############################################################################################################
 
+colors = ['lightskyblue', 'palevioletred', 'm', 'forestgreen', 'orange', 'pink', 'c', 'y']
 
-# RESULTS NR OF DATA POINTS
+figPath = '/Users/Hanna/Documents/KEX/plottar'
 
-#
-#
-#
-def test1():
+#############################################################################################################
+#############################################################################################################
 
-    nVec = [10, 30, 50]
-    nodesExpl = [[39.0, 40.0, 61.0, 35.0, 35.0], [76.0, 84.0, 67.0, 61.0, 68.0], [763.0, 212.0, 1.0, 193.0, 114.0]]
-    solTime = [[0.35259246826171875, 0.14630126953125, 0.12816810607910156, 0.07232666015625, 0.08226585388183594], [0.3099403381347656, 0.10167312622070312, 0.17832183837890625, 0.19997215270996094, 0.16625595092773438], [0.6478767395019531, 0.4001197814941406, 0.3057212829589844, 0.40549659729003906, 0.24067115783691406]]
+def timeLogPlot(figName, xVec, timeVec, xLabel):
 
     plt.figure()
-    for i in range(len(nVec)):
+    ax = plt.gca()
 
-        for j in range(len(nodesExpl[i])):
+    for i in range(len(xVec)):
 
-            n = nVec[i]
+        for j in range(len(timeVec[i])):
 
-            nodes = nodesExpl[i][j]
+            x = xVec[i]
+            t = timeVec[i][j]
+            ax.scatter(x, t, s = 6, c = colors[i])
+    
+    ax.set_yscale('log')
+    #ax.set_xscale('log')
 
-            plt.scatter(n, nodes, s = 10, c = 'black')
-
-    plt.title('Explored nodes')
-    plt.xlabel('nr of data points')
-    plt.ylabel('nr of nodes')
+    plt.title('y-log plot, solver run time')
+    plt.xlabel(xLabel)
+    plt.ylabel('time [t]')
+    plt.xticks(fontsize=6)
+    plt.yticks(fontsize=6)
+    plt.xticks( xVec )
+    plt.grid(axis = 'y')
     plt.show()
 
 
+#############################################################################################################
+
+
+def plotNodeResults(figName, xVec, nodeVec, xLabel):
+
     plt.figure()
-    for i in range(len(nVec)):
+    for i in range(len(xVec)):
 
-        for j in range(len( solTime[i])):
+        for j in range(len(nodeVec[i])):
 
-            plt.scatter(nVec[i], solTime[i][j], s = 10, c = 'black')
+            x = xVec[i]
+            node = nodeVec[i][j]
+            plt.scatter(x, node, s = 6, c = colors[i])
+
+    plt.title('Number of nodes explored by solver')
+    plt.xlabel(xLabel)
+    plt.ylabel('Number of nodes')
+    plt.xticks(fontsize=6)
+    plt.yticks(fontsize=6)
+    plt.xticks( xVec )
+    plt.grid(axis = 'y')
+    # plt.show()
+    plt.savefig(os.path.join(figPath, figName))
+
+
+#############################################################################################################
+
+def plotTimeResults(figName, xVec, timeVec, xLabel):
+
+    plt.figure()
+    for i in range(len(xVec)):
+
+        for j in range(len(timeVec[i])):
+
+            x = xVec[i]
+            t = timeVec[i][j]
+            plt.scatter(x, t, s = 6, c = colors[i])
 
     plt.title('Solver run time')
-    plt.xlabel('nr of data points')
+    plt.xlabel(xLabel)
     plt.ylabel('time [s]')
-    plt.show()
+    plt.xticks(fontsize=6)
+    plt.yticks(fontsize=6)
+    plt.xticks( xVec )
+    plt.grid(axis = 'y')
+    # plt.show()
+    plt.savefig(os.path.join(figPath, figName))
+
+
+########################################################################################################################
+########################################################################################################################
+
+# RESULTS NR OF DATA POINTS
+def test1():
+
+    nVec = [50, 100, 150, 200, 250, 300, 350, 400]
+    
+    nodesExpl = [[170.0, 132.0, 65.0, 157.0, 160.0], 
+                 [493.0, 835.0, 537.0, 667.0, 291.0], 
+                 [3135.0, 1717.0, 1736.0, 1175.0, 1861.0], 
+                 [5788.0, 6041.0, 4502.0, 16626.0, 3751.0], 
+                 [14006.0, 58048.0, 15364.0, 13470.0, 44831.0], 
+                 [50519.0, 25866.0, 34640.0, 87325.0, 146801.0], 
+                 [459512.0, 258655.0, 96968.0, 570470.0, 2243453.0], 
+                 [6371529.0, 4139680.0, 3317123.0, 3630487.0, 6225086.0]]
+    
+    
+    solTime = [[0.43785667419433594, 0.2873039245605469, 0.203094482421875, 0.35451698303222656, 0.39063262939453125], 
+               [0.3438396453857422, 0.3598651885986328, 0.5056991577148438, 0.3593769073486328, 0.4381446838378906], 
+               [1.1732196807861328, 1.5476551055908203, 1.6467514038085938, 0.71942138671875, 1.0002899169921875], 
+               [1.625436782836914, 2.6881027221679688, 2.0730361938476562, 2.664705276489258, 1.411611557006836], 
+               [4.788330078125, 12.106590270996094, 6.327857971191406, 4.115835189819336, 8.250223159790039], 
+               [12.028196334838867, 6.346624374389648, 9.49761962890625, 17.250022888183594, 21.1503963470459], 
+               [82.00921249389648, 45.166128158569336, 23.005023956298828, 153.1617774963379, 550.8596992492676], 
+               [2429.6990604400635, 1216.0649242401123, 1216.1334018707275, 1159.923776626587, 1645.2074947357178]]
+
+
+
+    xLabel = 'Number of data points'
+    
+    figName = 'nodes_datapointtest.pdf'
+    plotNodeResults(figName, nVec, nodesExpl, xLabel)
+    
+    figName = 'time_datapointtest.pdf'
+    plotTimeResults(figName, nVec, solTime, xLabel)
+
+
+
+
+
 
 ############################################################################################
 
-#
-#
-#
+# RESULTS DIMENSION
 def test2():
 
     dimVec = [2, 4, 8, 16, 32, 64, 128]
 
-    nodesExpl = [ [...] , [...] , [...] , [...] , [...] , [...] , [...] ]
-    solTime = [ [...] , [...] , [...] , [...] , [...] , [...] , [...] ]
+    nodesExpl = [ [4320.0, 9304.0, 4793.0, 5338.0, 10770.0] , 
+                  [7833.0, 7731.0, 12060.0, 12804.0, 7700.0] , 
+                  [12382.0, 10804.0, 10287.0, 8901.0, 10012.0] , 
+                  [16587.0, 17793.0, 15023.0, 16682.0, 24890.0] , 
+                  [29105.0, 21520.0, 21928.0, 20977.0, 22465.0] , 
+                  [29001.0, 28156.0, 29696.0, 28462.0, 30384.0] , 
+                  [35114.0, 39302.0, 33156.0, 35838.0, 36951.0] ]
+    
+    
+    solTime = [ [1.5311412811279297, 2.303579330444336, 1.9161968231201172, 1.6007232666015625, 2.656637191772461] , 
+                [2.312887191772461, 2.334636688232422, 3.0379638671875, 4.503307342529297, 4.304441452026367], 
+                [4.023063659667969, 3.7872180938720703, 4.351438522338867, 3.912313461303711, 3.408395767211914] , 
+                [14.072957992553711, 10.657390594482422, 14.677499771118164, 16.194677352905273, 13.233427047729492] , 
+                [30.123056411743164, 24.48726463317871, 28.33274269104004, 31.066904067993164, 27.697832107543945] , 
+                [108.69872283935547, 99.88102149963379, 90.30349159240723, 51.80527687072754, 52.3924560546875] , 
+                [310.20593643188477, 322.7684211730957, 287.21867179870605, 334.0794105529785, 311.8942642211914] ]
 
 
-    plt.figure()
-    for i in range(len(dimVec)):
 
-        for j in range(len(nodesExpl[i])):
-
-            dim = dimVec[i]
-
-            nodes = nodesExpl[i][j]
-
-            plt.scatter(dim, nodes, s = 10, c = 'black')
-
-    plt.title('Explored nodes')
-    plt.xlabel('dimension of data')
-    plt.ylabel('nr of nodes')
-    plt.show()
+    xLabel = 'Dimension of data'
+    
+    figName = 'nodes_dimensiontest.pdf'
+    plotNodeResults(figName, dimVec, nodesExpl, xLabel)
+    
+    figName = 'time_dimensiontest.pdf'
+    plotTimeResults(figName, dimVec, solTime, xLabel)
 
 
-    plt.figure()
-    for i in range(len(dimVec)):
 
-        for j in range(len( solTime[i])):
-
-            plt.scatter(dimVec[i], solTime[i][j], s = 10, c = 'black')
-
-    plt.title('Solver run time')
-    plt.xlabel('dimension of data')
-    plt.ylabel('time [s]')
-    plt.show()
 
 
 
 ############################################################################################
 
-#
-#
-#
+# RESULTS NR OF CLUSTERS
 def test3():
 
-    clusterVec = [2, 3, 4, 5, 6, 7, 8, 9]
+    kVec = [2, 3, 4, 5, 6, 7, 8, 9]
 
-    nodesExpl = [ [...] , [...] , [...] , [...] , [...] , [...] , [...] ]
-    solTime = [ [...] , [...] , [...] , [...] , [...] , [...] , [...] ]
-
-
-    plt.figure()
-    for i in range(len(clusterVec)):
-
-        for j in range(len(nodesExpl[i])):
-
-            dim = clusterVec[i]
-
-            nodes = nodesExpl[i][j]
-
-            plt.scatter(dim, nodes, s = 10, c = 'black')
-
-    plt.title('Explored nodes')
-    plt.xlabel('nr of clusters')
-    plt.ylabel('nr of nodes')
-    plt.show()
+    nodesExpl = [ [97.0, 111.0, 123.0, 84.0, 103.0] ,
+                  [337.0, 376.0, 559.0, 396.0, 604.0] , 
+                  [2652.0, 1729.0, 1903.0, 1641.0, 2693.0] , 
+                  [18411.0, 5327.0, 4205.0, 2875.0, 30418.0] , 
+                  [54939.0, 15915.0, 70888.0, 9962.0, 43593.0] , 
+                  [46935.0, 35584.0, 19695.0, 402541.0, 45568.0] , 
+                  [725912.0, 1552210.0, 243174.0, 98332.0, 86175.0] ,
+                  [702239.0, 326794.0, 3992374.0, 356050.0, 1706843.0] ]
+    
+    solTime = [ [0.2061176300048828, 0.2521839141845703, 0.13593482971191406, 0.14918899536132812, 0.1797962188720703] , 
+                [0.3310661315917969, 0.31899452209472656, 0.3049488067626953, 0.3667716979980469, 0.2695655822753906] , 
+                [2.8986587524414062, 1.7404918670654297, 1.6254196166992188, 2.590118408203125, 2.6969051361083984] , 
+                [6.628824234008789, 3.385396957397461, 2.693845748901367, 4.854520797729492, 5.946371078491211] , 
+                [15.8057861328125, 5.614322662353516, 19.931562423706055, 9.695415496826172, 14.509542465209961] , 
+                [21.62383460998535, 23.482328414916992, 13.146785736083984, 93.34233665466309, 22.708240509033203] , 
+                [249.20732307434082, 502.89889335632324, 115.45275115966797, 59.15387153625488, 56.23690414428711] , 
+                [259.59159660339355, 124.23261833190918, 1056.2130298614502, 159.27459716796875, 509.139928817749] ]
 
 
-    plt.figure()
-    for i in range(len(clusterVec)):
 
-        for j in range(len( solTime[i])):
+    xLabel = 'Number of clusters'
+    
+    figName = 'nodes_clustertest.pdf'
+    plotNodeResults(figName, kVec, nodesExpl, xLabel)
+    
+    figName = 'time_clustertest.pdf'
+    plotTimeResults(figName, kVec, solTime, xLabel)
 
-            plt.scatter(clusterVec[i], solTime[i][j], s = 10, c = 'black')
 
-    plt.title('Solver run time')
-    plt.xlabel('nr of clusters')
-    plt.ylabel('time [s]')
-    plt.show()
+    
 
 
 
 
+def main():
+
+    global colors
+    global figPath
+
+    #test1()
+    #test2()
+    test3()
+
+
+
+
+
+
+
+main()
