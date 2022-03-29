@@ -10,25 +10,31 @@ import os
 ###################################################################################################################
 # TEXT DOCUMENTS WITH DATA
 filePath = '/Users/Hanna/Documents/KEX/data_sets/'
+figPath = '/Users/Hanna/Documents/KEX/plottar'
+
+# data with different dimensions
 D128C2File = filePath + 'g2-128-10.txt'    # 128-dimenisional data with 2 clusters
 D64C2File = filePath + 'g2-64-10.txt'      # 64-dimenisional data with 2 clusters
 D32C2File = filePath + 'g2-32-10.txt'      # 32-dimenisional data with 2 clusters
-D16C2File = filePath + 'g2-16-10'          # 16-dimenisional data with 2 clusters
+D16C2File = filePath + 'g2-16-10.txt'      # 16-dimenisional data with 2 clusters
 D8C2File = filePath + 'g2-8-10.txt'        # 8-dimenisional data with 2 clusters
 D4C2File = filePath + 'g2-4-10.txt'        # 4-dimenisional data with 2 clusters
 
-D2C9File = filePath + 'D2.txt'             # 2-dimenisional data with 9 clusters
 D2C2File = filePath + 'g2-2-10.txt'        # 2-dimenisional data with 2 clusters
+D2C2File_2 = filePath + 'g2-2-30.txt'
 
-# data files created from makeData.py
-# ....
+# 2-dimenisional data with 3-9 clusters
+D2C3File = filePath + '3clusters2.txt'       # from makeData.py
+D2C4File = filePath + '4clusters2.txt'       # from makeData.py
+D2C5File = filePath + '5clusters2.txt'       # from makeData.py
+D2C6File = filePath + '6clusters2.txt'       # from makeData.py
+D2C7File = filePath + '7clusters2.txt'       # from makeData.py
+D2C8File = filePath + '8clusters2.txt'       # from makeData.py
+D2C9File = filePath + 'D2.txt'             # 2-dimenisional data with 9 clusters
 
 
 # PARAMETERS
-dimVec = [2, 4, 8, 16, 32, 64, 128]
-clusterVec = [2, 3, 4, 5, 6, 7, 8, 9]
 iterations = 5  # nr of iterations the program will do
-
 
 
 # PLOTTING COLORS
@@ -216,7 +222,7 @@ def solveProblem(dataArray, dimension, clusters, n, ite):
     model.setObjective(sum(r[data] for data in range(n)))
 
     # SET TIME LIMIT
-    model.setParam('TimeLimit', 1800) # you don't want to wait much longer! Consider test that are faster
+    model.setParam('TimeLimit', 3600) # you don't want to wait much longer! Consider test that are faster
     
     # UPDATE MODEL
     model.update()
@@ -350,17 +356,14 @@ def plot2D(dataArray, clusterList, centroidCoordinates, ite):
     plt.ylabel('$x_2$')
     
 
-    
-
 ###################################################################################################################
-
+    
 #
 #
 #
-def dataPointTest(normArray, nVec):
+def dataPointTest(normArray, nVec, clusters):
 
     # constant parameters
-    clusters = 2
     dimension = 2
     
     # DATA WE WANT TO SAVE FROM SOLVER
@@ -373,7 +376,7 @@ def dataPointTest(normArray, nVec):
         tempNodeVec = []
         tempTimeVec = []
         
-        for ite in range(0,iterations):    # test every sample size 5 times
+        for ite in range(0,1):    # test every sample size 5 times
 
             # choose n random data from normilized data array
             randomArray = chooseRandomData(normArray, n)  
@@ -391,9 +394,7 @@ def dataPointTest(normArray, nVec):
 
         # show/save 2D cluster plots
         #plt.show()
-        figPath = '/Users/Hanna/Documents/KEX/plottar'
-        figName = 'test1_' + str(clusters) + 'C_' + str(n) + 'D.pdf'
-        #plt.savefig(figName)
+        figName = 'test1_' + str(clusters) + 'k_' + str(n) + 'd.pdf'
         plt.savefig(os.path.join(figPath, figName))
 
 
@@ -437,10 +438,10 @@ def dimensionTest(normArray, dimension):
 #
 #
 #
-def clusterTest(normArray, clusters):
+def clusterTest(normArray, k):
 
     # constant parameters
-    n = 100
+    n = 40
     dimension = 2
 
     # DATA WE WANT TO SAVE FROM SOLVER
@@ -454,11 +455,14 @@ def clusterTest(normArray, clusters):
         randomArray = chooseRandomData(normArray, n)  
 
         # gurobi solver  
-        nodeCount, runTime = solveProblem(randomArray, dimension, clusters, n, ite)
+        nodeCount, runTime = solveProblem(randomArray, dimension, k, n, ite)
 
         # add expl. nodes and runtime of iteration i
         nodeVec.append(nodeCount)
         timeVec.append(runTime)
+
+    figName = str(k) + 'clusters.pdf'
+    plt.savefig(os.path.join(figPath, figName))
 
     return nodeVec, timeVec
 
@@ -474,93 +478,124 @@ def main():
     global centroidColors
     global dataColors
     global iterations
-    global clusterVec
-    global dimVec
+    global filePath
+    global figPath
     
     # make data arrays                          # Test
-    # D2C9Array = readFile(D2C9File)              # (1), 3
-    # D2C2Array = readFile(D2C2File)              # 1, 2, 3            
+    #D2C2Array_2 = readFile(D2C2File_2)
+
+    D2C2Array = readFile(D2C2File)              # 1, 2, 3            
     # D4C2Array = readFile(D4C2File)              # 2
     # D8C2Array = readFile(D8C2File)              # 2
     # D16C2Array = readFile(D16C2File)            # 2
     # D32C2Array = readFile(D32C2File)            # 2
     # D64C2Array = readFile(D64C2File)            # 2
-    D128C2Array = readFile(D128C2File)          # 2
+    # D128C2Array = readFile(D128C2File)          # 2
+    D2C3Array = readFile(D2C3File)              # 3
+    D2C4Array = readFile(D2C4File)              # 3
+    D2C5Array = readFile(D2C5File)              # 3
+    D2C6Array = readFile(D2C6File)              # 3
+    D2C7Array = readFile(D2C7File)              # 3
+    D2C8Array = readFile(D2C8File)              # 3
+    D2C9Array = readFile(D2C9File)              # 3
 
-    # normalize data
-    # D2C9Norm = normalizeData(D2C9Array)
-    # D2C2Norm = normalizeData(D2C2Array)
+    
+
+    # normalized data
+    #D2C2Norm_2 = normalizeData(D2C2Array_2)
+
+    D2C2Norm = normalizeData(D2C2Array)
     # D4C2Norm = normalizeData(D4C2Array)
     # D8C2Norm = normalizeData(D8C2Array)
     # D16C2Norm = normalizeData(D16C2Array)
     # D32C2Norm = normalizeData(D32C2Array)
     # D64C2Norm = normalizeData(D64C2Array)
-    D128C2Norm = normalizeData(D128C2Array)
+    # D128C2Norm = normalizeData(D128C2Array)
     
+    D2C3Norm = normalizeData(D2C3Array)
+    D2C4Norm = normalizeData(D2C4Array)
+    D2C5Norm = normalizeData(D2C5Array)
+    D2C6Norm = normalizeData(D2C6Array)
+    D2C7Norm = normalizeData(D2C7Array)
+    D2C8Norm = normalizeData(D2C8Array)
+    D2C9Norm = normalizeData(D2C9Array)
 
 
     
  
+##################################################################################################################
     
     
-    
-    
-    
-    # TEST 1: nr of data points
+    # TEST 1: nr of data points 2 Dimension, 2 Clusters
+    # nVec = [50, 100, 150, 200, 250, 300, 350, 400]
+    # clusters = 2
+    # nodeVec, timeVec = dataPointTest(D2C2Norm, nVec, clusters)
 
-    nVec = [25, 50, 100, 200, 400, 800]
-    #nodeVec1, timeVec1 = dataPointTest(D2C2Norm, nVec)
 
+##################################################################################################################
 
 
     # TEST 2: dimension
-    dimOfData = dimVec[6]
-    nodeVec2, timeVec2 = dimensionTest(D128C2Norm, dimOfData)
+    
+    # dim = 128
+    # nodeVecDim, timeVecDim = dimensionTest(D128C2Norm, dim)
+
+   
+
+##################################################################################################################3
+    
+    # TEST 3: 2-9 clusters
+    
+    k = 9 
+    nodeVecK, timeVecK = clusterTest(D2C9Norm, k)
 
 
 
-    # TEST 3: nr of clusters
-    #clusterOfData = clusterVec[0]
-    #nodeVec3, timeVec3 = clusterTest(D2C9Norm, clusterOfData)
+#################################################################################################################
+#################################################################################################################
 
 
-
-
-
-
-    # print('_________________________________ TEST 1: data points _______________________________________')
+    # print('_________________________________ TEST: data points, 2 clusters _______________________________________')
     # print('nr of data points')
     # print(nVec)
     # print(' ')
     # print('nodes explored')
-    # print(nodeVec1)
+    # print(nodeVec)
     # print(' ')
     # print('solver run time')
-    # print(timeVec1)
+    # print(timeVec)
+    # print(' ')
 
 
-    print(' ')
-    print('_________________________________ TEST 2: dimension _______________________________________')
-    print('dimension of data')
-    print(dimOfData)
-    print(' ')
-    print('nodes explored')
-    print(nodeVec2)
-    print(' ')
-    print('solver run time')
-    print(timeVec2)
+#################################################################################################################
 
 
     # print(' ')
-    # print('_________________________________ TEST 3: clusters _______________________________________')
-    # print('dimension of data')
-    # print(clusterOfData)
+    # print('_________________________________ TEST: dimension _______________________________________')
+    # print(' ')
+    # print('dimension of data: ' + str(dim))
     # print(' ')
     # print('nodes explored')
-    # print(nodeVec3)
+    # print(nodeVecDim)
     # print(' ')
     # print('solver run time')
-    # print(timeVec3)
+    # print(timeVecDim)
+    # print(' ')
+
+
+
+#################################################################################################################
+
+
+    print(' ')
+    print('_________________________________ TEST: clusters _______________________________________')
+    print('k: ' + str(k))
+    print(' ')
+    print('nodes explored')
+    print(nodeVecK)
+    print(' ')
+    print('solver run time')
+    print(timeVecK)
 
 
     
