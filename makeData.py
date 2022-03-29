@@ -1,15 +1,48 @@
 import matplotlib.pyplot as plt
 import random
+import math
+import os
 
 
+filePath = '/Users/Hanna/Documents/KEX/data_sets/'
+figPath = '/Users/Hanna/Documents/KEX/plottar/data set plots/'
+
+###########################################################################################################
 
 def makeDataSet(k):
 
 
     # make k random centroids
     centroids = []
+    ceilSqrtk = math.ceil(math.sqrt(k))
 
-    # for i in range(k):
+    for A in range(1,ceilSqrtk+1):
+
+        for B in range (1,A+1):
+            x = 1000*A
+            y = 1000*B
+            c = [x,y]
+            centroids.append(c)
+        
+        for C in range (1,A):
+            x = 1000*C
+            y = 1000*A
+            c = [x,y]
+            centroids.append(c)
+    
+    centroids = centroids[0:k]
+
+    
+    
+    # Annat sätt att få fram clusterpunkter som jag inte tror var lika bra som det övre
+    # for xKoordinat in range(1,ceilSqrtk+1):
+    #     for yKoordinat in range(1,ceilSqrtk+1):
+    #             x = 1000*xKoordinat
+    #             y = 1000*yKoordinat
+    #             c = [x,y]
+    #             centroids.append(c)
+
+    # centroids = centroids[0:k]
 
 
     #     a = random.randint(1,1000)
@@ -22,11 +55,11 @@ def makeDataSet(k):
     #     c = [x,y]
     #     centroids.append(c)
 
-    centroids = [[1000,80], [-100,80], [-2000,-100], [100,-200]]
+    # centroids = [[1000,80], [-100,80], [-2000,-100], [100,-200]]
 
 
 
-    maxMinLimit = 80
+    maxMinLimit = 100
     dataList = []
     for c in centroids: # make points for every cluster
 
@@ -38,7 +71,7 @@ def makeDataSet(k):
         maxLimy = c[1] + maxMinLimit
 
 
-        for j in range(200):     # make 100 data points for every cluster
+        for j in range(333):     # make 100 data points for every cluster
 
             x = random.randint(minLimx, maxLimx)
             y = random.randint(minLimy, maxLimy)
@@ -69,24 +102,26 @@ def saveDocument(fileName, dataList):
 # 
 # 
 #             
-def plot(dataList, k):
+def plotData(data, k):
 
     
     fig = plt.figure()
 
     # plot data points
-    n = len(dataList)  # nr of data points
+    n = len(data)  # nr of data points
     for j in range(n):
 
-        x = dataList[j][0]                 # x-coordinate
-        y = dataList[j][1]                 # y-coordinate
+        x = data[j][0]                 # x-coordinate
+        y = data[j][1]                 # y-coordinate
 
-        plt.scatter(x, y, s = 10)
+        plt.scatter(x, y, c = 'black', s = 5)
         
-    plt.title('k-means clustering: ' + str(k) + ' clusters, ' + str(n) + ' data points')
+    plt.title('k-means clustering: ' + str(k) + ' clusters')
     plt.xlabel('$x_1$')
     plt.ylabel('$x_2$')
-    plt.show()
+    #plt.show()
+    figName = 'dataSet_' +  str(k) + 'clusters' + '.pdf'
+    plt.savefig(os.path.join(figPath, figName))
     
 
 ##################################################################################################################
@@ -94,16 +129,20 @@ def plot(dataList, k):
 
 def main():
 
+    global filePath
+
     
-    k = 4       # nr of clusters
+    k = 3      # nr of clusters
     
     data = makeDataSet(k)
 
     print('nr of data points: ' + str(len(data)))
 
-    plot(data, k)
+    plotData(data, k)
 
-    # saveDocument('testfile.txt', dataList)
+    fileName = filePath + str(k) +'clusters.txt'
+
+    saveDocument(fileName, data)
 
 
 
